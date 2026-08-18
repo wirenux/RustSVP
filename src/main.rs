@@ -57,6 +57,7 @@ struct Rsvp {
     index: usize,
     last_advance: Instant,
     running: bool,
+    show_ui: bool,
 }
 
 impl Default for Rsvp {
@@ -75,6 +76,7 @@ predicts that any sufficiently compact mass will form a black hole."#; // Wikipe
             index: 0,
             last_advance: Instant::now(),
             running: false,
+            show_ui: true,
         }
     }
 }
@@ -161,6 +163,10 @@ impl eframe::App for Rsvp {
                 self.wpm = (self.wpm.saturating_sub(25)).max(10);
             }
 
+            if i.key_pressed(egui::Key::H) {
+                self.show_ui = !self.show_ui;
+            }
+
             if i.key_pressed(egui::Key::R) {
                 self.index = 0;
                 self.running = false;
@@ -168,39 +174,44 @@ impl eframe::App for Rsvp {
         });
 
         egui::CentralPanel::default().show(ui, |ui| {
-            ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
+            if self.show_ui {
+                ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
 
-            let has_next = self.has_next_sentence();
-            let has_previous = self.has_previous_sentence();
+                let has_next = self.has_next_sentence();
+                let has_previous = self.has_previous_sentence();
 
-            ui.horizontal(|ui| {
-                let start_button_label = if self.running { 
-                    "Pause (Space)"
-                } else {
-                    "Start (Space)"
-                };
+                ui.horizontal(|ui| {
+                    let start_button_label = if self.running { 
+                        "Pause (Space)"
+                    } else {
+                        "Start (Space)"
+                    };
 
-                if ui.button(start_button_label).clicked() {
-                    self.running = !self.running;
-                    if self.running {
-                        self.last_advance = Instant::now();
+                    if ui.button(start_button_label).clicked() {
+                        self.running = !self.running;
+                        if self.running {
+                            self.last_advance = Instant::now();
+                        }
                     }
-                }
 
-                if ui.add_enabled(has_previous, egui::Button::new("Back (←)")).clicked() {
-                    self.jump_to_previous_sentence();
-                }
+                    if ui.add_enabled(has_previous, egui::Button::new("Back (←)")).clicked() {
+                        self.jump_to_previous_sentence();
+                    }
 
-                if ui.add_enabled(has_next, egui::Button::new("Next (→)")).clicked() {
-                    self.jump_to_next_sentence();
-                }
+                    if ui.add_enabled(has_next, egui::Button::new("Next (→)")).clicked() {
+                        self.jump_to_next_sentence();
+                    }
 
-                if ui.button("Reset (R)").clicked() {
-                    self.index = 0;
-                    self.running = false;
-                }
-            });
+                    if ui.button("Reset (R)").clicked() {
+                        self.index = 0;
+                        self.running = false;
+                    }
 
+                    if ui.button("Hide UI (H)").clicked() {
+                        self.show_ui = false;
+                    }
+                });
+            }
 
             if let Some(word) = self.words.get(self.index) {
                 let chars: Vec<char> = word.chars().collect();

@@ -30,6 +30,7 @@
     - [x] Left / Right Arrow: Move back/to 1 sentence
     - [x] Up / Down Arrow: Modify WPM
     - [ ] Cmd+O open the file menu
+    - [x] H: Hide all Button
 
 - [x] Default Font: Helvetica
 
@@ -39,3 +40,5 @@
 - [ ] add license to font owner in the README.md
 
 - [ ] Include free/public domain text/book to test.
+
+- [ ] Custom app icon
