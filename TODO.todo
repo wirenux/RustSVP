@@ -56,8 +56,11 @@
 - [?] font drop down menu (~10 fonts)
     - [ ] add OpenDyslexic
 
-- [ ] add license to font owner in the README.md
-
 - [ ] Include free/public domain text/book to test.
 
 - [ ] Custom app icon
+
+# README
+
+- [ ] add Keybinds (in README.md)
+- [ ] add license to font owner in the README.md
