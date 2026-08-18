@@ -23,7 +23,8 @@
 - [ ] Add style
     - [ ] Black background, white text
     - [x] The centered letter is always at a fixed position (so no eye movement require)
-    
+    - [ ] Lightweight line to point to the Red char
+
 - [ ] Keyboard Keybinds
     - [ ] Space: Start / Stop
     - [ ] Left / Right Arrow: Move back/to 1 sentence
