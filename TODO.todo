@@ -20,9 +20,18 @@
 
 - [x] Add punctuation
 
+- [x] Add minimal resize window size
+
+- [-] Add Top Bar (On linux and Windows) in the UI
+- [-] Add things in the macOS topbar
+
+- [ ] Add Placeholder text (when no text)
+    - [ ] CMD+O or CTRL+O to open a .txt file
+    - [ ] Or hit \[HOTKEY\] to test a demo text
+
 - [ ] Add style
-    - [ ] Black background, white text
-    - [ ] Change Button Style to a classic White Rectangle with rounded edges
+    - [x] Black background, white text
+    - [x] Change Button Style to a classic White Rectangle with rounded edges
     - [x] The centered letter is always at a fixed position (so no eye movement require)
     - [ ] Lightweight line to point to the Red char
 
@@ -33,9 +42,18 @@
     - [ ] Cmd+O open the file menu
     - [x] H: Hide all Button
 
-- [x] Default Font: Helvetica
+- [x] Rearrange UI (in order)
+    1. Start/Stop Btn
+    2. Back (<)
+    3. Next (>)
+    4. Slider
+    5. (On the far right) Reset
+    
 
-- [ ] font drop down menu (~10 fonts)
+- [x] Default Font: Ubuntu Bold
+- [x] Remove font: NotoSansSymbols (useless)
+
+- [?] font drop down menu (~10 fonts)
     - [ ] add OpenDyslexic
 
 - [ ] add license to font owner in the README.md

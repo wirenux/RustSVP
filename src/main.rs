@@ -1,56 +1,88 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use eframe::egui;
 use std::time::{Duration, Instant};
 use std::sync::Arc;
 
-fn setup_custom_fonts(ctx: &egui::Context) {
+fn setup_custom_styles(ctx: &egui::Context) {
     let mut fonts = egui::FontDefinitions::default();
 
     fonts.font_data.insert(
-        "Helvetica".to_owned(),
+        "Ubuntu".to_owned(),
         Arc::new(egui::FontData::from_static(include_bytes!(
-            "../assets/Helvetica.ttf"
+            "../assets/Ubuntu-Bold.ttf"
         ))),
     );
-
-    fonts.font_data.insert(
-        "NotoSansSymbols".to_owned(),
-        Arc::new(egui::FontData::from_static(include_bytes!(
-            "../assets/NotoSansSymbols.ttf"
-        ))),
-    );
-
-    let font_stack = vec!["Helvetica".to_owned(), "NotoSansSymbols".to_owned()];
 
     fonts
         .families
         .entry(egui::FontFamily::Proportional)
         .or_default()
-        .clone_from(&font_stack);
+        .insert(0, "Ubuntu".to_owned());
 
     fonts
         .families
         .entry(egui::FontFamily::Monospace)
         .or_default()
-        .clone_from(&font_stack);
+        .insert(0, "Ubuntu".to_owned());
 
     ctx.set_fonts(fonts);
+
+    let theme = egui::Theme::Dark;
+    let mut style = (*ctx.style_of(theme)).clone();
+
+    style.visuals.panel_fill = egui::Color32::from_rgb(10, 10, 10); // Background color
+
+    style.spacing.button_padding = egui::vec2(16.0, 8.0);
+    style.spacing.interact_size.y = 24.0;
+    style.spacing.interact_size.x = 70.0;
+
+    let button_rounding = egui::CornerRadius::same(6);
+
+    style.visuals.widgets.inactive.bg_fill = egui::Color32::WHITE;
+    style.visuals.widgets.inactive.weak_bg_fill = egui::Color32::WHITE;
+    style.visuals.widgets.inactive.corner_radius = button_rounding;
+    style.visuals.widgets.inactive.fg_stroke = egui::Stroke::new(1.0, egui::Color32::BLACK);
+    style.visuals.widgets.inactive.bg_stroke = egui::Stroke::NONE;
+
+    style.visuals.widgets.hovered.bg_fill = egui::Color32::from_gray(230);
+    style.visuals.widgets.hovered.weak_bg_fill = egui::Color32::from_gray(230);
+    style.visuals.widgets.hovered.corner_radius = button_rounding;
+    style.visuals.widgets.hovered.fg_stroke = egui::Stroke::new(1.0, egui::Color32::BLACK);
+    style.visuals.widgets.hovered.bg_stroke = egui::Stroke::NONE;
+
+    style.visuals.widgets.active.bg_fill = egui::Color32::from_gray(200);
+    style.visuals.widgets.active.weak_bg_fill = egui::Color32::from_gray(200);
+    style.visuals.widgets.active.corner_radius = button_rounding;
+    style.visuals.widgets.active.fg_stroke = egui::Stroke::new(1.0, egui::Color32::BLACK);
+    style.visuals.widgets.active.bg_stroke = egui::Stroke::NONE;
+
+    style.visuals.widgets.noninteractive.bg_fill = egui::Color32::from_gray(80);
+    style.visuals.widgets.noninteractive.weak_bg_fill = egui::Color32::from_gray(80);
+    style.visuals.widgets.noninteractive.corner_radius = button_rounding;
+    style.visuals.widgets.noninteractive.fg_stroke = egui::Stroke::new(1.0, egui::Color32::from_gray(140));
+
+    ctx.set_style_of(theme, style);
 }
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([1280.0, 720.0]),
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([1280.0, 720.0])
+            .with_min_inner_size([700.0, 300.0])
+            .with_title("R(ust)SVP"),
         ..Default::default()
     };
+
     eframe::run_native(
         "R(ust)SVP",
         options,
         Box::new(|cc| {
-            setup_custom_fonts(&cc.egui_ctx);
+            setup_custom_styles(&cc.egui_ctx);
             Ok(Box::<Rsvp>::default())
         }),
     )
 }
-
 struct Rsvp {
     words: Vec<String>,
     wpm: u32,
@@ -175,16 +207,14 @@ impl eframe::App for Rsvp {
 
         egui::CentralPanel::default().show(ui, |ui| {
             if self.show_ui {
-                ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
-
                 let has_next = self.has_next_sentence();
                 let has_previous = self.has_previous_sentence();
 
                 ui.horizontal(|ui| {
                     let start_button_label = if self.running { 
-                        "Pause (Space)"
+                        "Pause"
                     } else {
-                        "Start (Space)"
+                        "Start"
                     };
 
                     if ui.button(start_button_label).clicked() {
@@ -194,22 +224,22 @@ impl eframe::App for Rsvp {
                         }
                     }
 
-                    if ui.add_enabled(has_previous, egui::Button::new("Back (←)")).clicked() {
+                    if ui.add_enabled(has_previous, egui::Button::new("<")).clicked() {
                         self.jump_to_previous_sentence();
                     }
 
-                    if ui.add_enabled(has_next, egui::Button::new("Next (→)")).clicked() {
+                    if ui.add_enabled(has_next, egui::Button::new(">")).clicked() {
                         self.jump_to_next_sentence();
                     }
 
-                    if ui.button("Reset (R)").clicked() {
-                        self.index = 0;
-                        self.running = false;
-                    }
+                    ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
 
-                    if ui.button("Hide UI (H)").clicked() {
-                        self.show_ui = false;
-                    }
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        if ui.button("Reset").clicked() {
+                            self.index = 0;
+                            self.running = false;
+                        }
+                    });
                 });
             }
 
@@ -236,7 +266,7 @@ impl eframe::App for Rsvp {
                     let center_x = ui.available_rect_before_wrap().center().x;
                     let center_y = ui.available_rect_before_wrap().center().y;
 
-                    let font_id = egui::FontId::proportional(48.0);
+                    let font_id = egui::FontId::proportional(80.0);
 
                     let center_galley = ui.painter().layout_no_wrap(
                         center,
