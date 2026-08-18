@@ -1,5 +1,40 @@
 use eframe::egui;
 use std::time::{Duration, Instant};
+use std::sync::Arc;
+
+fn setup_custom_fonts(ctx: &egui::Context) {
+    let mut fonts = egui::FontDefinitions::default();
+
+    fonts.font_data.insert(
+        "Helvetica".to_owned(),
+        Arc::new(egui::FontData::from_static(include_bytes!(
+            "../assets/Helvetica.ttf"
+        ))),
+    );
+
+    fonts.font_data.insert(
+        "NotoSansSymbols".to_owned(),
+        Arc::new(egui::FontData::from_static(include_bytes!(
+            "../assets/NotoSansSymbols.ttf"
+        ))),
+    );
+
+    let font_stack = vec!["Helvetica".to_owned(), "NotoSansSymbols".to_owned()];
+
+    fonts
+        .families
+        .entry(egui::FontFamily::Proportional)
+        .or_default()
+        .clone_from(&font_stack);
+
+    fonts
+        .families
+        .entry(egui::FontFamily::Monospace)
+        .or_default()
+        .clone_from(&font_stack);
+
+    ctx.set_fonts(fonts);
+}
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
@@ -9,7 +44,8 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "R(ust)SVP",
         options,
-        Box::new(|_cc| {
+        Box::new(|cc| {
+            setup_custom_fonts(&cc.egui_ctx);
             Ok(Box::<Rsvp>::default())
         }),
     )
@@ -44,6 +80,22 @@ predicts that any sufficiently compact mass will form a black hole."#; // Wikipe
 }
 
 impl Rsvp {
+    fn has_previous_sentence(&self) -> bool {
+        self.index > 0
+    }
+
+    fn has_next_sentence(&self) -> bool {
+        let mut target = self.index + 1;
+        while target < self.words.len() {
+            let prev_word = &self.words[target - 1];
+            if prev_word.ends_with('.') || prev_word.ends_with('!') || prev_word.ends_with('?') {
+                return true;
+            }
+            target += 1;
+        }
+        false
+    }
+
     fn jump_to_previous_sentence(&mut self) {
         if self.index == 0 {
             return;
@@ -52,9 +104,9 @@ impl Rsvp {
         let mut target = self.index - 1;
 
         while target > 0 {
-            let word = &self.words[target - 1];
+            let prev_word = &self.words[target - 1];
 
-            if word.ends_with('.') || word.ends_with('!') || word.ends_with('?') {
+            if prev_word.ends_with('.') || prev_word.ends_with('!') || prev_word.ends_with('?') {
                 break;
             }
             target -= 1;
@@ -63,6 +115,24 @@ impl Rsvp {
         self.index = target;
         self.last_advance = Instant::now();
     }
+
+    fn jump_to_next_sentence(&mut self) {
+        let mut target = self.index + 1;
+
+        while target < self.words.len() {
+            let word = &self.words[target - 1];
+            
+            if word.ends_with('.') || word.ends_with('!') || word.ends_with('?') {
+                break;
+            }
+            target += 1;
+        }
+
+        if target < self.words.len() { // Preventing from going beyond the text length
+            self.index = target;
+            self.last_advance = Instant::now();
+        }
+    }
 }
 
 impl eframe::App for Rsvp {
@@ -70,27 +140,37 @@ impl eframe::App for Rsvp {
         egui::CentralPanel::default().show(ui, |ui| {
             ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
 
-            let start_button_label = if self.running { 
-                "Pause"
-            } else {
-                "Start"
-            };
+            let has_next = self.has_next_sentence();
+            let has_previous = self.has_previous_sentence();
 
-            if ui.button(start_button_label).clicked() {
-                self.running = !self.running;
-                if self.running {
-                    self.last_advance = Instant::now();
+            ui.horizontal(|ui| {
+                let start_button_label = if self.running { 
+                    "Pause (Space)"
+                } else {
+                    "Start (Space)"
+                };
+
+                if ui.button(start_button_label).clicked() {
+                    self.running = !self.running;
+                    if self.running {
+                        self.last_advance = Instant::now();
+                    }
                 }
-            }
 
-            if ui.button("Back").clicked() {
-                self.jump_to_previous_sentence();
-            }
+                if ui.add_enabled(has_previous, egui::Button::new("Back (←)")).clicked() {
+                    self.jump_to_previous_sentence();
+                }
 
-            if ui.button("Reset").clicked() {
-                self.index = 0;
-                self.running = false;
-            }
+                if ui.add_enabled(has_next, egui::Button::new("Next (→)")).clicked() {
+                    self.jump_to_next_sentence();
+                }
+
+                if ui.button("Reset (R)").clicked() {
+                    self.index = 0;
+                    self.running = false;
+                }
+            });
+
 
             if let Some(word) = self.words.get(self.index) {
                 let chars: Vec<char> = word.chars().collect();
@@ -135,9 +215,11 @@ impl eframe::App for Rsvp {
                         egui::Color32::WHITE,
                     );
 
-                    let center_pos = egui::pos2(center_x - (center_galley.size().x / 2.0 ), center_y);
-                    let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center_y);
-                    let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center_y);
+                    let half_h = center_galley.size().y / 2.0;
+
+                    let center_pos = egui::pos2(center_x - (center_galley.size().x / 2.0), center_y - half_h);
+                    let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center_y - half_h);
+                    let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center_y - half_h);
 
                     ui.painter().galley(left_pos, left_galley, egui::Color32::WHITE);
                     ui.painter().galley(center_pos, center_galley, egui::Color32::RED);

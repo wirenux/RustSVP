@@ -7,7 +7,12 @@
 - [x] Restart button
 - [x] Back One sentence
     - [x] If at the start of a sentence and press Back go to the previous sentence
-- [ ] Open file menu (OS)
+    - [x] Greyed out if not possible
+- [x] Next sentence
+    - [x] Greyed out if not possible
+
+- [ ] Being able to use .txt file
+    - [ ] Open file menu (OS)
 
 - [x] Make the text bigger
 
@@ -21,7 +26,12 @@
     
 - [ ] Keyboard Keybinds
     - [ ] Space: Start / Stop
-    - [ ] Left / Right Arrow move back/to 1 sentence
+    - [ ] Left / Right Arrow: Move back/to 1 sentence
+    - [ ] Up / Down Arrow: Modify WPM
+
+- [x] Default Font: Helvetica
 
 - [ ] font drop down menu (~10 fonts)
     - [ ] add OpenDyslexic
+
+- [ ] Include free/public domain text/book to test.
