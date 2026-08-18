@@ -22,6 +22,7 @@
 
 - [ ] Add style
     - [ ] Black background, white text
+    - [ ] Change Button Style to a classic White Rectangle with rounded edges
     - [x] The centered letter is always at a fixed position (so no eye movement require)
     - [ ] Lightweight line to point to the Red char
 
