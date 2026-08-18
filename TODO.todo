@@ -1,16 +1,26 @@
 - [x] Print text
 - [x] Flashing word
-- [ ] Red letter
+- [x] Red letter
+    - [x] Get the centered letter
 - [x] WPM Slider
-- [ ] Start/Stop button
-- [ ] Restart
+- [x] Start/Stop button
+- [x] Restart button
 - [ ] Back One sentence
 - [ ] Open file menu (OS)
 
-- [ ] Make the text bigger
+- [x] Make the text bigger
+
+- [x] Stop on the last word
+
+- [x] Add punctuation
 
 - [ ] Add style
     - [ ] Black background, white text
+    - [x] The centered letter is always at a fixed position (so no eye movement require)
+    
+- [ ] Keyboard Keybinds
+    - [ ] Space: Start / Stop
+    - [ ] Left / Right Arrow move back/to 1 sentence
 
-- [ ] font drop down menu
+- [ ] font drop down menu (~10 fonts)
     - [ ] add OpenDyslexic
