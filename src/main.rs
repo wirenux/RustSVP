@@ -137,6 +137,36 @@ impl Rsvp {
 
 impl eframe::App for Rsvp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        ui.input(|i| {
+            if i.key_pressed(egui::Key::Space) {
+                self.running = !self.running;
+                if self.running {
+                    self.last_advance = Instant::now();
+                }
+            }
+
+            if i.key_pressed(egui::Key::ArrowLeft) && self.has_previous_sentence() {
+                self.jump_to_previous_sentence();
+            }
+
+            if i.key_pressed(egui::Key::ArrowRight) && self.has_next_sentence() {
+                self.jump_to_next_sentence();
+            }
+
+            if i.key_pressed(egui::Key::ArrowUp) {
+                self.wpm = (self.wpm + 25).min(1000);
+            }
+
+            if i.key_pressed(egui::Key::ArrowDown) {
+                self.wpm = (self.wpm.saturating_sub(25)).max(10);
+            }
+
+            if i.key_pressed(egui::Key::R) {
+                self.index = 0;
+                self.running = false;
+            }
+        });
+
         egui::CentralPanel::default().show(ui, |ui| {
             ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
 

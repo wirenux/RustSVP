@@ -26,9 +26,10 @@
     - [ ] Lightweight line to point to the Red char
 
 - [ ] Keyboard Keybinds
-    - [ ] Space: Start / Stop
-    - [ ] Left / Right Arrow: Move back/to 1 sentence
-    - [ ] Up / Down Arrow: Modify WPM
+    - [x] Space: Start / Stop
+    - [x] Left / Right Arrow: Move back/to 1 sentence
+    - [x] Up / Down Arrow: Modify WPM
+    - [ ] Cmd+O open the file menu
 
 - [x] Default Font: Helvetica
 
