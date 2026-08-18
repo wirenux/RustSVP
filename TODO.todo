@@ -5,7 +5,8 @@
 - [x] WPM Slider
 - [x] Start/Stop button
 - [x] Restart button
-- [ ] Back One sentence
+- [x] Back One sentence
+    - [x] If at the start of a sentence and press Back go to the previous sentence
 - [ ] Open file menu (OS)
 
 - [x] Make the text bigger

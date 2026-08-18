@@ -43,6 +43,28 @@ predicts that any sufficiently compact mass will form a black hole."#; // Wikipe
     }
 }
 
+impl Rsvp {
+    fn jump_to_previous_sentence(&mut self) {
+        if self.index == 0 {
+            return;
+        }
+
+        let mut target = self.index - 1;
+
+        while target > 0 {
+            let word = &self.words[target - 1];
+
+            if word.ends_with('.') || word.ends_with('!') || word.ends_with('?') {
+                break;
+            }
+            target -= 1;
+        }
+
+        self.index = target;
+        self.last_advance = Instant::now();
+    }
+}
+
 impl eframe::App for Rsvp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ui, |ui| {
@@ -59,6 +81,10 @@ impl eframe::App for Rsvp {
                 if self.running {
                     self.last_advance = Instant::now();
                 }
+            }
+
+            if ui.button("Back").clicked() {
+                self.jump_to_previous_sentence();
             }
 
             if ui.button("Reset").clicked() {
