@@ -29,11 +29,11 @@
     - [ ] CMD+O or CTRL+O to open a .txt file
     - [ ] Or hit \[HOTKEY\] to test a demo text
 
-- [ ] Add style
+- [x] Add style
     - [x] Black background, white text
     - [x] Change Button Style to a classic White Rectangle with rounded edges
     - [x] The centered letter is always at a fixed position (so no eye movement require)
-    - [ ] Lightweight line to point to the Red char
+    - [x] Lightweight line to point to the Red char
 
 - [ ] Keyboard Keybinds
     - [x] Space: Start / Stop

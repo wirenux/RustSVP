@@ -243,6 +243,47 @@ impl eframe::App for Rsvp {
                 });
             }
 
+            let center_x = ui.available_rect_before_wrap().center().x;
+            let center_y = ui.available_rect_before_wrap().center().y;
+
+            let line_color = egui::Color32::from_gray(60);
+            let bar_half_width = 140.0;
+            let bar_y_offset = 55.0;
+
+            // Top
+            ui.painter().line_segment(
+                [
+                    egui::pos2(center_x - bar_half_width, center_y - bar_y_offset),
+                    egui::pos2(center_x + bar_half_width, center_y - bar_y_offset),
+                ],
+                egui::Stroke::new(2.0, line_color),
+            );
+            // Red line
+            ui.painter().line_segment(
+                [
+                    egui::pos2(center_x, center_y - bar_y_offset),
+                    egui::pos2(center_x, center_y - bar_y_offset + 10.0),
+                ],
+                egui::Stroke::new(2.0, egui::Color32::RED),
+            );
+
+            // Bottom
+            ui.painter().line_segment(
+                [
+                    egui::pos2(center_x - bar_half_width, center_y + bar_y_offset),
+                    egui::pos2(center_x + bar_half_width, center_y + bar_y_offset),
+                ],
+                egui::Stroke::new(2.0, line_color),
+            );
+            // Red line
+            ui.painter().line_segment(
+                [
+                    egui::pos2(center_x, center_y + bar_y_offset),
+                    egui::pos2(center_x, center_y + bar_y_offset - 10.0),
+                ],
+                egui::Stroke::new(2.0, egui::Color32::RED),
+            );
+
             if let Some(word) = self.words.get(self.index) {
                 let chars: Vec<char> = word.chars().collect();
                 let char_count = word.chars().count();
