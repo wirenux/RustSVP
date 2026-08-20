@@ -38,7 +38,7 @@ Source: [Wikipedia](https://en.wikipedia.org/wiki/Rapid_serial_visual_presentati
 
 ---
 
-TODO: add VIDEO
+<iframe width="560" height="315" src="https://www.youtube.com/embed/e07anny9a3Q?si=TFngLwOQ1TtP2kkJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <table align="center" border="0">
     <tr>
