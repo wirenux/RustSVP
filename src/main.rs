@@ -253,6 +253,9 @@ impl eframe::App for Rsvp {
                             self.index = 0;
                             self.running = false;
                         }
+                        if ui.button("Open...").clicked() {
+                            self.open_file();
+                        }
                     });
                 });
             }
