@@ -356,39 +356,37 @@ impl eframe::App for Rsvp {
                 let pos = egui::pos2(center.x - galley.size().x / 2.0, center.y - galley.size().y / 2.0);
                 ui.painter().galley(pos, galley, egui::Color32::from_gray(140));
             } else if let Some(word) = self.words.get(self.index) { // Word rendering
-                if !self.words.is_empty() {
-                    let (left_part, center_part, right_part) = Self::split_orp(word);
+                let (left_part, center_part, right_part) = Self::split_orp(word);
 
-                    let font_id = egui::FontId::proportional(WORD_FONT_SIZE);
+                let font_id = egui::FontId::proportional(WORD_FONT_SIZE);
 
-                    let center_galley = ui.painter().layout_no_wrap(
-                        center_part,
-                        font_id.clone(),
-                        egui::Color32::RED,
-                    );
+                let center_galley = ui.painter().layout_no_wrap(
+                    center_part,
+                    font_id.clone(),
+                    egui::Color32::RED,
+                );
 
-                    let left_galley = ui.painter().layout_no_wrap(
-                        left_part,
-                        font_id.clone(),
-                        egui::Color32::WHITE,
-                    );
+                let left_galley = ui.painter().layout_no_wrap(
+                    left_part,
+                    font_id.clone(),
+                    egui::Color32::WHITE,
+                );
 
-                    let right_galley = ui.painter().layout_no_wrap(
-                        right_part,
-                        font_id.clone(),
-                        egui::Color32::WHITE,
-                    );
+                let right_galley = ui.painter().layout_no_wrap(
+                    right_part,
+                    font_id.clone(),
+                    egui::Color32::WHITE,
+                );
 
-                    let half_h = center_galley.size().y / 2.0;
+                let half_h = center_galley.size().y / 2.0;
 
-                    let center_pos = egui::pos2(center.x - (center_galley.size().x / 2.0), center.y - half_h);
-                    let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center.y - half_h);
-                    let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center.y - half_h);
+                let center_pos = egui::pos2(center.x - (center_galley.size().x / 2.0), center.y - half_h);
+                let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center.y - half_h);
+                let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center.y - half_h);
 
-                    ui.painter().galley(left_pos, left_galley, egui::Color32::WHITE);
-                    ui.painter().galley(center_pos, center_galley, egui::Color32::RED);
-                    ui.painter().galley(right_pos, right_galley, egui::Color32::WHITE);
-                }
+                ui.painter().galley(left_pos, left_galley, egui::Color32::WHITE);
+                ui.painter().galley(center_pos, center_galley, egui::Color32::RED);
+                ui.painter().galley(right_pos, right_galley, egui::Color32::WHITE);
             }
 
             if self.running {
