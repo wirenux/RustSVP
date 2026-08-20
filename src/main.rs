@@ -2,6 +2,17 @@ use eframe::egui;
 use std::time::{Duration, Instant};
 use std::sync::Arc;
 
+const WPM_MIN: u32 = 10;
+const WPM_MAX: u32 = 1000;
+const WPM_STEP: u32 = 25;
+
+const WORD_FONT_SIZE: f32 = 80.0;
+const PLACEHOLDER_FONT_SIZE: f32 = 40.0;
+
+const GUIDE_BAR_HALF_WIDTH: f32 = 140.0;
+const GUIDE_BAR_Y_OFFSET: f32 = 55.0;
+const GUIDE_TICK_LENGTH: f32 = 10.0;
+
 fn setup_custom_styles(ctx: &egui::Context) {
     let mut fonts = egui::FontDefinitions::default();
 
@@ -232,11 +243,11 @@ impl eframe::App for Rsvp {
             }
 
             if i.key_pressed(egui::Key::ArrowUp) {
-                self.wpm = (self.wpm + 25).min(1000);
+                self.wpm = (self.wpm.saturating_add(WPM_STEP)).min(WPM_MAX);
             }
 
             if i.key_pressed(egui::Key::ArrowDown) {
-                self.wpm = (self.wpm.saturating_sub(25)).max(10);
+                self.wpm = (self.wpm.saturating_sub(WPM_STEP)).max(WPM_MIN);
             }
 
             if i.key_pressed(egui::Key::H) {
@@ -281,7 +292,7 @@ impl eframe::App for Rsvp {
                         self.jump_to_next_sentence();
                     }
 
-                    ui.add(egui::Slider::new(&mut self.wpm, 10..=1000).text("WPM"));
+                    ui.add(egui::Slider::new(&mut self.wpm, WPM_MIN..=WPM_MAX).text("WPM"));
 
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         if ui.button("Reset").clicked() {
@@ -299,22 +310,20 @@ impl eframe::App for Rsvp {
 
             if !self.words.is_empty() { // Eye guide line
                 let line_color = egui::Color32::from_gray(60);
-                let bar_half_width = 140.0;
-                let bar_y_offset = 55.0;
 
                 // Top
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center.x - bar_half_width, center.y - bar_y_offset),
-                    egui::pos2(center.x + bar_half_width, center.y - bar_y_offset),
+                    egui::pos2(center.x - GUIDE_BAR_HALF_WIDTH, center.y -  GUIDE_BAR_Y_OFFSET),
+                    egui::pos2(center.x + GUIDE_BAR_HALF_WIDTH, center.y -  GUIDE_BAR_Y_OFFSET),
                     ],
                     egui::Stroke::new(2.0, line_color),
                 );
                 // Red line
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center.x, center.y - bar_y_offset),
-                    egui::pos2(center.x, center.y - bar_y_offset + 10.0),
+                    egui::pos2(center.x, center.y -  GUIDE_BAR_Y_OFFSET),
+                    egui::pos2(center.x, center.y -  GUIDE_BAR_Y_OFFSET + GUIDE_TICK_LENGTH),
                     ],
                     egui::Stroke::new(2.0, egui::Color32::RED),
                 );
@@ -322,23 +331,23 @@ impl eframe::App for Rsvp {
                 // Bottom
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center.x - bar_half_width, center.y + bar_y_offset),
-                    egui::pos2(center.x + bar_half_width, center.y + bar_y_offset),
+                    egui::pos2(center.x - GUIDE_BAR_HALF_WIDTH, center.y +  GUIDE_BAR_Y_OFFSET),
+                    egui::pos2(center.x + GUIDE_BAR_HALF_WIDTH, center.y +  GUIDE_BAR_Y_OFFSET),
                     ],
                     egui::Stroke::new(2.0, line_color),
                 );
                 // Red line
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center.x, center.y + bar_y_offset),
-                    egui::pos2(center.x, center.y + bar_y_offset - 10.0),
+                    egui::pos2(center.x, center.y +  GUIDE_BAR_Y_OFFSET),
+                    egui::pos2(center.x, center.y +  GUIDE_BAR_Y_OFFSET - GUIDE_TICK_LENGTH),
                     ],
                     egui::Stroke::new(2.0, egui::Color32::RED),
                 );
             }
 
             if self.words.is_empty() {
-                let font_id = egui::FontId::proportional(40.0);
+                let font_id = egui::FontId::proportional(PLACEHOLDER_FONT_SIZE);
                 let galley = ui.painter().layout_no_wrap(
                     "Press Ctrl+O or Cmd+O to open a file.\nOr press D to get the Demo text.".to_string(),
                     font_id,
@@ -350,7 +359,7 @@ impl eframe::App for Rsvp {
                 if !self.words.is_empty() {
                     let (left_part, center_part, right_part) = Self::split_orp(word);
 
-                    let font_id = egui::FontId::proportional(80.0);
+                    let font_id = egui::FontId::proportional(WORD_FONT_SIZE);
 
                     let center_galley = ui.painter().layout_no_wrap(
                         center_part,
