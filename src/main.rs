@@ -389,9 +389,8 @@ impl eframe::App for Rsvp {
                         self.running = false;
                     }
                 }
+                ui.ctx().request_repaint();
             }
-
-            ui.ctx().request_repaint();
         });
     }
 }
