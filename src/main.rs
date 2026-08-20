@@ -190,6 +190,9 @@ impl Rsvp {
 
 impl eframe::App for Rsvp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let has_next = self.has_next_sentence();
+        let has_previous = self.has_previous_sentence();
+
         ui.input(|i| {
             if i.key_pressed(egui::Key::Space) && !self.words.is_empty() {
                 self.running = !self.running;
@@ -198,11 +201,11 @@ impl eframe::App for Rsvp {
                 }
             }
 
-            if i.key_pressed(egui::Key::ArrowLeft) && self.has_previous_sentence() {
+            if i.key_pressed(egui::Key::ArrowLeft) && has_previous {
                 self.jump_to_previous_sentence();
             }
 
-            if i.key_pressed(egui::Key::ArrowRight) && self.has_next_sentence() {
+            if i.key_pressed(egui::Key::ArrowRight) && has_next {
                 self.jump_to_next_sentence();
             }
 
@@ -234,9 +237,6 @@ impl eframe::App for Rsvp {
 
         egui::CentralPanel::default().show(ui, |ui| {
             if self.show_ui {
-                let has_next = self.has_next_sentence();
-                let has_previous = self.has_previous_sentence();
-
                 ui.horizontal(|ui| {
                     let start_button_label = if self.running { 
                         "Pause"
@@ -273,10 +273,9 @@ impl eframe::App for Rsvp {
                 });
             }
 
-            if !self.words.is_empty() {
-                let center_x = ui.available_rect_before_wrap().center().x;
-                let center_y = ui.available_rect_before_wrap().center().y;
+            let center = ui.available_rect_before_wrap().center();
 
+            if !self.words.is_empty() {
                 let line_color = egui::Color32::from_gray(60);
                 let bar_half_width = 140.0;
                 let bar_y_offset = 55.0;
@@ -284,16 +283,16 @@ impl eframe::App for Rsvp {
                 // Top
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center_x - bar_half_width, center_y - bar_y_offset),
-                    egui::pos2(center_x + bar_half_width, center_y - bar_y_offset),
+                    egui::pos2(center.x - bar_half_width, center.y - bar_y_offset),
+                    egui::pos2(center.x + bar_half_width, center.y - bar_y_offset),
                     ],
                     egui::Stroke::new(2.0, line_color),
                 );
                 // Red line
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center_x, center_y - bar_y_offset),
-                    egui::pos2(center_x, center_y - bar_y_offset + 10.0),
+                    egui::pos2(center.x, center.y - bar_y_offset),
+                    egui::pos2(center.x, center.y - bar_y_offset + 10.0),
                     ],
                     egui::Stroke::new(2.0, egui::Color32::RED),
                 );
@@ -301,32 +300,29 @@ impl eframe::App for Rsvp {
                 // Bottom
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center_x - bar_half_width, center_y + bar_y_offset),
-                    egui::pos2(center_x + bar_half_width, center_y + bar_y_offset),
+                    egui::pos2(center.x - bar_half_width, center.y + bar_y_offset),
+                    egui::pos2(center.x + bar_half_width, center.y + bar_y_offset),
                     ],
                     egui::Stroke::new(2.0, line_color),
                 );
                 // Red line
                 ui.painter().line_segment(
                     [
-                    egui::pos2(center_x, center_y + bar_y_offset),
-                    egui::pos2(center_x, center_y + bar_y_offset - 10.0),
+                    egui::pos2(center.x, center.y + bar_y_offset),
+                    egui::pos2(center.x, center.y + bar_y_offset - 10.0),
                     ],
                     egui::Stroke::new(2.0, egui::Color32::RED),
                 );
             }
 
             if self.words.is_empty() {
-                let center_x = ui.available_rect_before_wrap().center().x;
-                let center_y = ui.available_rect_before_wrap().center().y;
-
                 let font_id = egui::FontId::proportional(40.0);
                 let galley = ui.painter().layout_no_wrap(
                     "Press Ctrl+O or Cmd+O to open a file.\nOr press D to get the Demo text.".to_string(),
                     font_id,
                     egui::Color32::from_gray(140)
                 );
-                let pos = egui::pos2(center_x - galley.size().x / 2.0, center_y - galley.size().y / 2.0);
+                let pos = egui::pos2(center.x - galley.size().x / 2.0, center.y - galley.size().y / 2.0);
                 ui.painter().galley(pos, galley, egui::Color32::from_gray(140));
             } else if let Some(word) = self.words.get(self.index) {
                 let chars: Vec<char> = word.chars().collect();
@@ -344,38 +340,35 @@ impl eframe::App for Rsvp {
                         char_count / 2
                     };
 
-                    let left: String = chars[..mid_idx].iter().collect();
-                    let center: String = chars[mid_idx..mid_idx + 1].iter().collect();
-                    let right: String = chars[mid_idx + 1..].iter().collect();
-
-                    let center_x = ui.available_rect_before_wrap().center().x;
-                    let center_y = ui.available_rect_before_wrap().center().y;
+                    let left_part: String = chars[..mid_idx].iter().collect();
+                    let center_part: String = chars[mid_idx..mid_idx + 1].iter().collect();
+                    let right_part: String = chars[mid_idx + 1..].iter().collect();
 
                     let font_id = egui::FontId::proportional(80.0);
 
                     let center_galley = ui.painter().layout_no_wrap(
-                        center,
+                        center_part,
                         font_id.clone(),
                         egui::Color32::RED,
                     );
 
                     let left_galley = ui.painter().layout_no_wrap(
-                        left,
+                        left_part,
                         font_id.clone(),
                         egui::Color32::WHITE,
                     );
 
                     let right_galley = ui.painter().layout_no_wrap(
-                        right,
+                        right_part,
                         font_id.clone(),
                         egui::Color32::WHITE,
                     );
 
                     let half_h = center_galley.size().y / 2.0;
 
-                    let center_pos = egui::pos2(center_x - (center_galley.size().x / 2.0), center_y - half_h);
-                    let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center_y - half_h);
-                    let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center_y - half_h);
+                    let center_pos = egui::pos2(center.x - (center_galley.size().x / 2.0), center.y - half_h);
+                    let left_pos = egui::pos2(center_pos.x - left_galley.size().x, center.y - half_h);
+                    let right_pos = egui::pos2(center_pos.x + center_galley.size().x, center.y - half_h);
 
                     ui.painter().galley(left_pos, left_galley, egui::Color32::WHITE);
                     ui.painter().galley(center_pos, center_galley, egui::Color32::RED);
