@@ -39,7 +39,7 @@
     - [x] Space: Start / Stop
     - [x] Left / Right Arrow: Move back/to 1 sentence
     - [x] Up / Down Arrow: Modify WPM
-    - [ ] Cmd+O open the file menu
+    - [x] Cmd+O open the file menu (also CTRL+O on Linux and windows)
     - [x] H: Hide all Button
 
 - [x] Rearrange UI (in order)

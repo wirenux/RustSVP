@@ -1,5 +1,3 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
 use eframe::egui;
 use std::time::{Duration, Instant};
 use std::sync::Arc;
@@ -70,7 +68,7 @@ fn main() -> eframe::Result<()> {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1280.0, 720.0])
             .with_min_inner_size([700.0, 300.0])
-            .with_title("R(ust)SVP"),
+            .with_drag_and_drop(true),
         ..Default::default()
     };
 
@@ -114,6 +112,18 @@ predicts that any sufficiently compact mass will form a black hole."#; // Wikipe
 }
 
 impl Rsvp {
+    fn open_file(&mut self) {
+        if let Some(path) = rfd::FileDialog::new()
+            .add_filter("Text files", &["txt"])
+            .pick_file()
+        && let Ok(content) = std::fs::read_to_string(&path) {
+            self.words = content.split_whitespace().map(String::from).collect();
+            self.index = 0;
+            self.running = false;
+            self.last_advance = Instant::now();
+        }
+    }
+
     fn has_previous_sentence(&self) -> bool {
         self.index > 0
     }
@@ -202,6 +212,10 @@ impl eframe::App for Rsvp {
             if i.key_pressed(egui::Key::R) {
                 self.index = 0;
                 self.running = false;
+            }
+
+            if i.modifiers.command && i.key_pressed(egui::Key::O) {
+                self.open_file();
             }
         });
 

@@ -1,7 +1,1 @@
-A black hole is an astronomical body so compact that its gravity prevents anything,
-including light, from escaping. Albert Einstein's theory of general relativity,
-which describes gravitation as the curvature of spacetime,
-predicts that any sufficiently compact mass will form a black hole.
-The boundary of no escape is called the event horizon.
-In general relativity, crossing a black hole's event horizon traps an object inside but produces no locally detectable change.
-General relativity also predicts that every black hole should have a central singularity, where the curvature of spacetime is infinite.
+A programming language is an artificial language that can be used to instruct a computer to perform a particular task. To be considered a general programming language, it must be computationally complete, or Turing-Complete. It is nevertheless common to regard some languages that are not computationally complete, like database query languages and other domain-specific languages as programming languages as well. 
