@@ -11,8 +11,8 @@
 - [x] Next sentence
     - [x] Greyed out if not possible
 
-- [ ] Being able to use .txt file
-    - [ ] Open file menu (OS)
+- [x] Being able to use .txt file
+    - [x] Open file menu (OS)
 
 - [x] Make the text bigger
 
@@ -25,9 +25,9 @@
 - [-] Add Top Bar (On linux and Windows) in the UI
 - [-] Add things in the macOS topbar
 
-- [ ] Add Placeholder text (when no text)
-    - [ ] CMD+O or CTRL+O to open a .txt file
-    - [ ] Or hit \[HOTKEY\] to test a demo text
+- [x] Add Placeholder text (when no text)
+    - [x] CMD+O or CTRL+O to open a .txt file
+    - [x] Or hit \[HOTKEY\] to test a demo text
 
 - [x] Add style
     - [x] Black background, white text
@@ -54,10 +54,11 @@
 - [x] Default Font: Ubuntu Bold
 - [x] Remove font: NotoSansSymbols (useless)
 
-- [?] font drop down menu (~10 fonts)
-    - [ ] add OpenDyslexic
+- [-] font drop down menu (~10 fonts)
 
-- [ ] Include free/public domain text/book to test.
+- [x] Include free/public domain text/book to test.
+
+- [ ] Clean up the code
 
 - [ ] Custom app icon
 
