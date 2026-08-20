@@ -58,6 +58,12 @@
 
 - [x] Include free/public domain text/book to test.
 
+- [x] Add Drag & Drop
+    - [x] Add feedback
+    - [x] Add error if not a .txt
+
+- [ ] Change Demo text to RSVP wikipedia
+
 - [ ] Clean up the code
 
 - [ ] Custom app icon

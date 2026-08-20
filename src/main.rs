@@ -99,6 +99,7 @@ struct Rsvp {
     last_advance: Instant,
     running: bool,
     show_ui: bool,
+    error: Option<String>,
 }
 
 const DEMO_TEXT: &str = r#"A black hole is an astronomical body so compact that its gravity prevents anything,
@@ -116,6 +117,7 @@ impl Default for Rsvp {
             last_advance: Instant::now(),
             running: false,
             show_ui: true,
+            error: None,
         }
     }
 }
@@ -128,15 +130,31 @@ impl Rsvp {
         self.last_advance = Instant::now();
     }
 
+    fn load_from_path(&mut self, path: &std::path::Path) {
+        if path.extension().and_then(|e| e.to_str()) != Some("txt") {
+            self.error = Some(format!("Unsupported file: {}", path.display()));
+            return;
+        }
+        match std::fs::read_to_string(path) {
+            Ok(content) => {
+                self.words = content.split_whitespace().map(String::from).collect();
+                self.index = 0;
+                self.running = false;
+                self.last_advance = Instant::now();
+                self.error = None; // clear any previous error on success
+            }
+            Err(e) => {
+                self.error = Some(format!("Couldn't read file: {e}"));
+            }
+        }
+    }
+
     fn open_file(&mut self) {
         if let Some(path) = rfd::FileDialog::new()
             .add_filter("Text files", &["txt"])
             .pick_file()
-        && let Ok(content) = std::fs::read_to_string(&path) {
-            self.words = content.split_whitespace().map(String::from).collect();
-            self.index = 0;
-            self.running = false;
-            self.last_advance = Instant::now();
+        {
+            self.load_from_path(&path);
         }
     }
 
@@ -226,6 +244,14 @@ impl eframe::App for Rsvp {
         let has_next = self.has_next_sentence();
         let has_previous = self.has_previous_sentence();
 
+        let dropped_path = ui.ctx().input(|i| {
+            i.raw.dropped_files.first().map(|f| f.path().to_path_buf())
+        });
+
+        if let Some(path) = dropped_path {
+            self.load_from_path(&path);
+        }
+
         ui.input(|i| {
             if i.key_pressed(egui::Key::Space) && !self.words.is_empty() {
                 self.running = !self.running;
@@ -304,6 +330,9 @@ impl eframe::App for Rsvp {
                         }
                     });
                 });
+                if let Some(err) = &self.error {
+                    ui.colored_label(egui::Color32::from_rgb(220, 80, 80), err);
+                }
             }
 
             let center = ui.available_rect_before_wrap().center();
@@ -400,6 +429,21 @@ impl eframe::App for Rsvp {
                     }
                 }
                 ui.ctx().request_repaint();
+            }
+            if !ui.ctx().input(|i| i.raw.hovered_files.is_empty()) { // Drew last so on top
+                let screen_rect = ui.ctx().content_rect();
+                ui.painter().rect_filled(
+                    screen_rect,
+                    0.0,
+                    egui::Color32::from_rgba_unmultiplied(0, 0, 0, 180),
+                );
+                ui.painter().text(
+                    screen_rect.center(),
+                    egui::Align2::CENTER_CENTER,
+                    "Drop .txt file to load",
+                    egui::FontId::proportional(30.0),
+                    egui::Color32::WHITE,
+                );
             }
         });
     }
