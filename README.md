@@ -38,8 +38,6 @@ Source: [Wikipedia](https://en.wikipedia.org/wiki/Rapid_serial_visual_presentati
 
 ---
 
-[![Watch the video](https://img.youtube.com/vi/e07anny9a3Q/maxresdefault.jpg)](https://youtu.be/e07anny9a3Q)
-
 <table align="center" border="0">
     <tr>
         <td colspan="4" align="center">
