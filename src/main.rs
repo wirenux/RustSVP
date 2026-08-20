@@ -186,6 +186,28 @@ impl Rsvp {
             self.last_advance = Instant::now();
         }
     }
+
+    fn split_orp(word: &str) -> (String, String, String) {
+        let chars: Vec<char> = word.chars().collect();
+        let char_count = chars.len();
+
+        let clean_len = word
+            .trim_end_matches(|c: char| c.is_ascii_punctuation())
+            .chars()
+            .count();
+
+        let mid_idx = if clean_len > 0 {
+            clean_len / 2
+        } else {
+            char_count / 2
+        };
+
+        (
+            chars[..mid_idx].iter().collect(),
+            chars[mid_idx..mid_idx + 1].iter().collect(),
+            chars[mid_idx + 1..].iter().collect(),
+        )
+    }
 }
 
 impl eframe::App for Rsvp {
@@ -275,7 +297,7 @@ impl eframe::App for Rsvp {
 
             let center = ui.available_rect_before_wrap().center();
 
-            if !self.words.is_empty() {
+            if !self.words.is_empty() { // Eye guide line
                 let line_color = egui::Color32::from_gray(60);
                 let bar_half_width = 140.0;
                 let bar_y_offset = 55.0;
@@ -324,25 +346,9 @@ impl eframe::App for Rsvp {
                 );
                 let pos = egui::pos2(center.x - galley.size().x / 2.0, center.y - galley.size().y / 2.0);
                 ui.painter().galley(pos, galley, egui::Color32::from_gray(140));
-            } else if let Some(word) = self.words.get(self.index) {
-                let chars: Vec<char> = word.chars().collect();
-                let char_count = word.chars().count();
-
-                if char_count > 0 {
-                    let clean_len = word
-                        .trim_end_matches(|c: char| c.is_ascii_punctuation())
-                        .chars()
-                        .count();
-
-                    let mid_idx = if clean_len > 0 {
-                        clean_len / 2
-                    } else {
-                        char_count / 2
-                    };
-
-                    let left_part: String = chars[..mid_idx].iter().collect();
-                    let center_part: String = chars[mid_idx..mid_idx + 1].iter().collect();
-                    let right_part: String = chars[mid_idx + 1..].iter().collect();
+            } else if let Some(word) = self.words.get(self.index) { // Word rendering
+                if !self.words.is_empty() {
+                    let (left_part, center_part, right_part) = Self::split_orp(word);
 
                     let font_id = egui::FontId::proportional(80.0);
 
