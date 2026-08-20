@@ -129,6 +129,10 @@ impl Rsvp {
         }
     }
 
+    fn ends_sentence(word: &str) -> bool {
+        word.ends_with('.') || word.ends_with('!') || word.ends_with('?')
+    }
+
     fn has_previous_sentence(&self) -> bool {
         self.index > 0
     }
@@ -137,7 +141,7 @@ impl Rsvp {
         let mut target = self.index + 1;
         while target < self.words.len() {
             let prev_word = &self.words[target - 1];
-            if prev_word.ends_with('.') || prev_word.ends_with('!') || prev_word.ends_with('?') {
+            if Self::ends_sentence(prev_word) {
                 return true;
             }
             target += 1;
@@ -155,7 +159,7 @@ impl Rsvp {
         while target > 0 {
             let prev_word = &self.words[target - 1];
 
-            if prev_word.ends_with('.') || prev_word.ends_with('!') || prev_word.ends_with('?') {
+            if Self::ends_sentence(prev_word) {
                 break;
             }
             target -= 1;
@@ -171,7 +175,7 @@ impl Rsvp {
         while target < self.words.len() {
             let word = &self.words[target - 1];
             
-            if word.ends_with('.') || word.ends_with('!') || word.ends_with('?') {
+            if Self::ends_sentence(word) {
                 break;
             }
             target += 1;
