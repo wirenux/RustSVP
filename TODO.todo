@@ -62,9 +62,9 @@
     - [x] Add feedback
     - [x] Add error if not a .txt
 
-- [ ] Change Demo text to RSVP wikipedia
+- [x] Change Demo text to RSVP wikipedia
 
-- [ ] Clean up the code
+- [x] Clean up the code
 
 - [ ] Custom app icon
 
@@ -72,3 +72,4 @@
 
 - [ ] add Keybinds (in README.md)
 - [ ] add license to font owner in the README.md
+- [ ] add : https://hackatime-badge.hackclub.com/U0B8A3MPYKH/R(ust)SVP

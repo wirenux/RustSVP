@@ -102,10 +102,11 @@ struct Rsvp {
     error: Option<String>,
 }
 
-const DEMO_TEXT: &str = r#"A black hole is an astronomical body so compact that its gravity prevents anything,
-including light, from escaping. Albert Einstein's theory of general relativity,
-which describes gravitation as the curvature of spacetime,
-predicts that any sufficiently compact mass will form a black hole."#; // Wikipedia Black Hole
+const DEMO_TEXT: &str = r#"Rapide serial visual presentation (RSVP) is a scientific method for studying the timing of vision.
+In RSVP, a sequence of stimuli is shown to an observer at once location in their visual field.
+The observer is instructed to report one of these stimuli, the target, which has a feature that differentiates it from the rest fo the stream.
+For instance, observers may see a sequence of stimuli consisting of gray letters with the exception of one red letter.
+"#; // Wikipedia Rapid serial visual presentation (RSVP)
 
 
 impl Default for Rsvp {
