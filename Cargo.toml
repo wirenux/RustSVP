@@ -10,7 +10,7 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Wirenux/rustsvp" # Replace with your repo link
 keywords = ["rsvp", "speed-reading", "egui", "gui"]
-categories = ["gui", "education"]
+categories = ["gui"]
 
 exclude = ["TODO.todo", "text.txt", "images/"]
 
