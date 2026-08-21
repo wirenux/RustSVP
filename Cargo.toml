@@ -6,7 +6,6 @@ description = "A speed reading RSVP application"
 authors = ["Louis Lesniak <Wirenux>"]
 
 license = "MIT"
-license-file = "LICENSE"
 
 readme = "README.md"
 repository = "https://github.com/Wirenux/rustsvp" # Replace with your repo link
