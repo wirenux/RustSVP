@@ -12,6 +12,8 @@ repository = "https://github.com/Wirenux/rustsvp" # Replace with your repo link
 keywords = ["rsvp", "speed-reading", "egui", "gui"]
 categories = ["gui", "education"]
 
+exclude = ["TODO.todo", "text.txt"]
+
 [dependencies]
 eframe = "0.36.1"
 rfd = "0.17.2"
