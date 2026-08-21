@@ -87,11 +87,10 @@ This project was built to learn Rust GUI development and experiment with RSVP. H
 
 ## Installation & Quick Start
 
-The easiest way to get the emulator is to install it directly via [crates.io](https://crates.io/crates/) using Cargo:
+The easiest way to get the emulator is to install it directly via [crates.io](https://crates.io/crates/rustsvp) using Cargo:
 
-TODO: add crates link + cargo command
 ```bash
-cargo install
+cargo install rustsvp
 ```
 
 > [!TIP]
