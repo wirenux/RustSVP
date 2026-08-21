@@ -75,13 +75,29 @@ fn setup_custom_styles(ctx: &egui::Context) {
 }
 
 fn main() -> eframe::Result<()> {
-    let options = eframe::NativeOptions {
+    fn load_icon() -> Option<egui::IconData> {
+        let icon_byte = include_bytes!("../assets/icon.png");
+        let image = image::load_from_memory(icon_byte).ok()?.into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+
+        Some(egui::IconData {
+            rgba,
+            width,
+            height,
+        })
+    }
+
+    let mut options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1280.0, 720.0])
             .with_min_inner_size([700.0, 300.0])
             .with_drag_and_drop(true),
         ..Default::default()
     };
+    if let Some(icon) = load_icon() {
+        options.viewport = options.viewport.with_icon(icon);
+    }
 
     eframe::run_native(
         "R(ust)SVP",
@@ -92,6 +108,7 @@ fn main() -> eframe::Result<()> {
         }),
     )
 }
+
 struct Rsvp {
     words: Vec<String>,
     wpm: u32,

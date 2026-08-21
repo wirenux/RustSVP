@@ -2639,9 +2639,10 @@ dependencies = [
 
 [[package]]
 name = "rustsvp"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "eframe",
+ "image",
  "rfd",
 ]
 
